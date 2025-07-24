@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request, redirect
 from app.utils import generate_id, is_url_valid
 from app.models import save_url, increment_click_count, get_stats
 from app.store import url_db
+import threading
+
+lock = threading.Lock()
 
 app = Flask(__name__)
 BASE_URL = "http://127.0.0.1:5000/"
@@ -31,12 +34,20 @@ def shorten_url():
     if not original_url or not is_url_valid(original_url):
         return jsonify({"error": "Invalid URL"}), 400
 
-    # Generate unique short ID
-    short_id = generate_id()
-    while short_id in url_db:
-        short_id = generate_id()
+    with lock:
+        for sid, val in url_db.items():
+            if val["long_url"] == original_url:
+                return jsonify({
+                    "short_url": BASE_URL + sid,
+                    "short_id": sid,
+                    "long_url": original_url
+                }), 200
 
-    save_url(short_id, original_url)
+        short_id = generate_id()
+        while short_id in url_db:
+            short_id = generate_id()
+
+        save_url(short_id, original_url)
 
     return jsonify({
         "short_url": BASE_URL + short_id,
@@ -47,20 +58,22 @@ def shorten_url():
 
 @app.route("/<short_id>")
 def redirect_to_url(short_id):
-    if short_id not in url_db:
-        return jsonify({"error": "URL not found"}), 404
-
-    increment_click_count(short_id)
-    return redirect(url_db[short_id]["long_url"])
+    with lock:
+        if short_id not in url_db:
+            return jsonify({"error": "URL not found"}), 404
+        url = url_db[short_id]["long_url"]
+        increment_click_count(short_id)
+    return redirect(url)
 
 
 @app.route("/api/stats/<short_id>")
 def url_stats(short_id):
-    try:
-        stats = get_stats(short_id)
-        return jsonify(stats)
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 404
+    with lock:
+        try:
+            stats = get_stats(short_id)
+            return jsonify(stats)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
 
 
 if __name__ == "__main__":
