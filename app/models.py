@@ -1,16 +1,10 @@
-# TODO: Implement your data models here
-# Consider what data structures you'll need for:
-# - Storing URL mappings
-# - Tracking click counts
-# - Managing URL metadata
-
-from store import url_db, click_count
-from datetime import datetime
+from app.store import url_db, click_count
+from datetime import datetime,timezone
 
 def save_url(short_id: str, long_url: str):
     url_db[short_id] = {
         'long_url': long_url,
-        'created_at': datetime.now(datetime.timezone.utc),
+        'created_at': datetime.now(timezone.utc),
         'clicks': 0
     }
     
