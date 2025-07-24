@@ -4,7 +4,7 @@ from app.models import save_url, increment_click_count, get_stats
 from app.store import url_db
 
 app = Flask(__name__)
-BASE_URL = "https://short.ly/"
+BASE_URL = "http://127.0.0.1:5000/"
 
 
 @app.route("/")
