@@ -1,5 +1,6 @@
 # URL Shortener Service
 
+### Architecture
 ![URL Shortener Demo](/architecture.png)
 
 ## My Setup Instructions
