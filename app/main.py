@@ -1,6 +1,16 @@
 from flask import Flask, jsonify
-
+import re
 app = Flask(__name__)
+
+url_db = {}
+click_count = {}
+
+BASE_URL = "https://short.ly/"
+URL_REGEX = re.compile(
+    r'^(https?://)?'        
+    r'([\da-z.-]+)\.([a-z.]{2,6})'
+    r'([/\w .-]*)*/?$' 
+)
 
 @app.route('/')
 def health_check():
