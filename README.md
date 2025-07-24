@@ -1,5 +1,32 @@
 # URL Shortener Service
 
+![URL Shortener Demo](/architecture.png)
+
+## My Setup Instructions
+Setup Project
+```
+git clone https://github.com/RHL-RWT-01/URL-Shortner
+
+cd URL-Shortner
+```
+
+Install Dependencies
+```
+pip install -r requirements.txt
+```
+
+Run App
+```
+python -m flask --app app.main run
+```
+
+Run Tests
+```
+PYTHONPATH=. pytest tests/test_basic.py -v
+```
+
+
+
 ## Overview
 Build a simple URL shortening service similar to bit.ly or tinyurl. This assignment tests your ability to design and implement a small but complete feature from scratch.
 
