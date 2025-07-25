@@ -11,6 +11,14 @@ git clone https://github.com/RHL-RWT-01/URL-Shortner
 cd URL-Shortner
 ```
 
+Create & activate Virtual Environment (optional)
+```
+python3 -m venv venv
+
+source venv/bin/activate 
+
+```
+
 Install Dependencies
 ```
 pip install -r requirements.txt
@@ -27,44 +35,24 @@ PYTHONPATH=. pytest tests/test_basic.py -v
 ```
 
 
+## My Approach (Taken help from tips)
 
-## Overview
-Build a simple URL shortening service similar to bit.ly or tinyurl. This assignment tests your ability to design and implement a small but complete feature from scratch.
+- URL Generation: Each long URL is mapped to a unique, randomly generated short ID
 
-## Getting Started
+- Data Storage: All URLs and metadata (original URL, creation time, click count) are stored in a centralized url_db dictionary.
 
-### Prerequisites
-- Python 3.8+ installed
-- 3 hours of uninterrupted time
+- Redirection: Accessing a short URL performs a lookup in url_db and redirects to the original URL while incrementing the click count.
 
-### Setup (Should take < 5 minutes)
-```bash
-# Clone/download this repository
-# Navigate to the assignment directory
-cd url-shortener
+- Thread Safety: All read and write operations on shared data structure (url_db) are protected using threading.Lock with customized for write operations to ensure safe concurrent access.
 
-# Install dependencies
-pip install -r requirements.txt
+- Testing: Test cases using pytest to validate correctness all endpoints and thread safety
 
-# Start the application
-python -m flask --app app.main run
+##### AI- Use
+- Taken help from chatgpt to write regex and test cases
+- Creating custom write lock for thread safety is also suggested by chat gpt
 
-# The API will be available at http://localhost:5000
-# Run tests with: pytest
-```
 
-### What's Provided
-- Basic Flask application structure
-- Health check endpoints
-- One example test
-- Empty files for your implementation
-
-## Your Task
-
-### Time Limit: 3 Hours
-
-Build a URL shortener service with the following features:
-
+#### Full-filled all the Requirements listed below
 ### Core Requirements
 
 1. **Shorten URL Endpoint**
@@ -93,103 +81,4 @@ Build a URL shortener service with the following features:
 - Include basic error handling
 - Write at least 5 tests covering core functionality
 
-### Example API Usage
 
-```bash
-# Shorten a URL
-curl -X POST http://localhost:5000/api/shorten \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://www.example.com/very/long/url"}'
-
-# Response: {"short_code": "abc123", "short_url": "http://localhost:5000/abc123"}
-
-# Use the short URL (this redirects)
-curl -L http://localhost:5000/abc123
-
-# Get analytics
-curl http://localhost:5000/api/stats/abc123
-
-# Response: {"url": "https://www.example.com/very/long/url", "clicks": 5, "created_at": "2024-01-01T10:00:00"}
-```
-
-## Implementation Guidelines
-
-### What We're Looking For
-
-1. **Code Quality (30%)**
-   - Clean, readable code
-   - Proper error handling
-   - Good API design
-
-2. **Functionality (30%)**
-   - All requirements work correctly
-   - Handles edge cases appropriately
-   - Concurrent request handling
-
-3. **Testing (20%)**
-   - Tests for main functionality
-   - Tests for error cases
-   - Clear test descriptions
-
-4. **Architecture (20%)**
-   - Logical code organization
-   - Separation of concerns
-   - Scalable design decisions
-
-### What to Focus On
-- Get core functionality working first
-- Use appropriate data structures
-- Handle common error cases
-- Keep it simple but complete
-
-### What NOT to Do
-- Don't implement user authentication
-- Don't add a web UI
-- Don't implement custom short codes
-- Don't add rate limiting
-- Don't use external databases (in-memory is fine)
-
-## Evaluation Criteria
-
-Your submission will be evaluated on:
-- Core functionality completeness
-- Code quality and organization
-- Error handling and edge cases
-- Test coverage of critical paths
-- Clear and pragmatic design decisions
-
-## AI Usage Policy
-
-You are permitted to use AI assistants (ChatGPT, GitHub Copilot, etc.) as you would any other tool. If you use AI significantly, please note in a `NOTES.md` file:
-- Which tools you used
-- What you used them for
-- Any AI-generated code you modified or rejected
-
-## Tips
-
-- Start with the URL shortening logic
-- Use Python's built-in data structures
-- Don't overthink the short code generation
-- Focus on functionality over optimization
-- Remember to handle thread safety
-
-## Submission
-
-### Deliverables
-1. Your complete implementation
-2. All tests passing
-3. Brief notes about your approach (optional)
-
-### How to Submit
-1. Ensure all tests pass: `pytest`
-2. Create a zip of your solution
-3. Include any notes about your implementation choices
-4. Share the repository link on https://forms.gle/gpaV5LW5boDFk7uT6
-
-## Questions?
-
-If you have questions about the requirements, please email [anand@retainsure.com] within the first 30 minutes of starting.
-
----
-
-Good luck! We're excited to see your solution.

@@ -1,6 +1,5 @@
 
-__all__ = ['url_db', 'click_count']
+__all__ = ['url_db']
 
 url_db = {}
-click_count = {}
 
